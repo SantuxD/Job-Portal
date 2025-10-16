@@ -100,7 +100,7 @@ const loginUser = async (req, res) => {
 
 const logoutUser = (req, res) => {
   try {
-    res.status(200).cookie("token", "", { maxAge: 0 }).json({
+    return res.status(200).cookie("token", "", { maxAge: 0 }).json({
       message: "Logged out successfully",
     });
   } catch (error) {
@@ -114,7 +114,15 @@ const logoutUser = (req, res) => {
 const updateUserProfile = async (req, res) => {
   try {
     const userId = req.params.id;
-    const { bio, skills, resume, profilePicture } = req.body;
+    const {
+      fullName,
+      email,
+      phoneNumber,
+      bio,
+      skills,
+      resume,
+      profilePicture,
+    } = req.body;
 
     const user = await userModel.findById(userId);
     if (!user) {
@@ -125,6 +133,9 @@ const updateUserProfile = async (req, res) => {
       ? skills.split(",").map((skill) => skill.trim())
       : [];
 
+    user.fullName = fullName || user.fullName;
+    user.email = email || user.email;
+    user.profile.phoneNumber = phoneNumber || user.profile.phoneNumber;
     user.profile.bio = bio || user.profile.bio;
     user.profile.skills = skillsArray || user.profile.skills;
     user.profile.resume = resume || user.profile.resume;
