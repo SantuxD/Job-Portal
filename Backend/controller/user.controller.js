@@ -1,4 +1,4 @@
-import userModel from "../models/user.model.js";
+import userModel from "../models/user.models.js";
 import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
 
@@ -23,7 +23,7 @@ const registerUser = async (req, res) => {
     });
     await newUser.save();
     res.status(201).json({
-      message: `User registered successfully ${fullName}`,
+      message: `${fullName} registered successfully `,
     });
   } catch (error) {
     console.error("Error in user registration:", error);
@@ -65,7 +65,7 @@ const loginUser = async (req, res) => {
 
     const token = await jwt.sign(
       {
-        id: user._id,
+        userId: user._id,
       },
       process.env.JWT_SECRET,
       {
