@@ -4,13 +4,19 @@ import jwt from "jsonwebtoken";
 
 const registerUser = async (req, res) => {
   try {
-    const { fullName, email, password, role } = req.body;
-    if (!fullName || !email || !password || !role) {
-      return res.status(400).json({ message: "All fields are required" });
+    const { fullName, email, password, phoneNumber, role } = req.body;
+
+    if (!fullName || !email || !password || !phoneNumber || !role) {
+      return res.status(400).json({
+        message: "All fields are required",
+      });
     }
     const existingUser = await userModel.findOne({ email });
+
     if (existingUser) {
-      return res.status(409).json({ message: "User already exists" });
+      return res.status(409).json({
+        message: "User already exists",
+      });
     }
 
     const hashedPassword = await bcrypt.hash(password, 10);
@@ -19,27 +25,33 @@ const registerUser = async (req, res) => {
       fullName,
       email,
       password: hashedPassword,
+      phoneNumber,
       role,
     });
     await newUser.save();
+
     res.status(201).json({
       message: `${fullName} registered successfully `,
     });
   } catch (error) {
     console.error("Error in user registration:", error);
-    res.status(500).json({ message: "Server error" });
+    res.status(500).json({
+      message: "Server error",
+    });
   }
 };
 
 const loginUser = async (req, res) => {
   try {
     const { email, password, role } = req.body;
+
     if (!email || !password || !role) {
       return res.status(400).json({
         message: "Email and password and role are required",
       });
     }
-    const user = await userModel.findOne({ email });
+
+    let user = await userModel.findOne({ email });
     if (!user) {
       return res.status(401).json({
         message: "Invalid email or password",
@@ -47,15 +59,12 @@ const loginUser = async (req, res) => {
     }
 
     const isPasswordValid = await bcrypt.compare(password, user.password);
+
     if (!isPasswordValid) {
       return res.status(401).json({
         message: "Invalid email or password",
       });
     }
-    res.status(200).json({
-      message: "Login successful",
-      user,
-    });
 
     if (user.role !== role) {
       return res.status(403).json({
@@ -86,7 +95,7 @@ const loginUser = async (req, res) => {
       .cookie("token", token, {
         maxAge: 1 * 24 * 60 * 60 * 1000,
         httpOnly: true,
-        sameSite: strict,
+        sameSite: "strict",
       })
       .json({
         message: `Welcome back, ${user.fullName}`,
@@ -113,7 +122,18 @@ const logoutUser = (req, res) => {
 
 const updateUserProfile = async (req, res) => {
   try {
-    const userId = req.params.id;
+    const userId = req.user.userId;
+    // console.log(userId);
+    // console.log(req.body);
+    // console.log("req.method:", req.method);
+    // console.log("req.headers:", req.headers);
+    // console.log("req.body:", req.body);
+    // console.log("req.cookies:", req.cookies);
+
+    if (!req.body || Object.keys(req.body).length === 0) {
+      return res.status(400).json({ message: "Request body missing" });
+    }
+
     const {
       fullName,
       email,
@@ -125,6 +145,7 @@ const updateUserProfile = async (req, res) => {
     } = req.body;
 
     const user = await userModel.findById(userId);
+
     if (!user) {
       return res.status(404).json({ message: "User not found" });
     }
@@ -133,13 +154,27 @@ const updateUserProfile = async (req, res) => {
       ? skills.split(",").map((skill) => skill.trim())
       : [];
 
-    user.fullName = fullName || user.fullName;
-    user.email = email || user.email;
-    user.profile.phoneNumber = phoneNumber || user.profile.phoneNumber;
-    user.profile.bio = bio || user.profile.bio;
-    user.profile.skills = skillsArray || user.profile.skills;
-    user.profile.resume = resume || user.profile.resume;
-    user.profile.profilePicture = profilePicture || user.profile.profilePicture;
+    if (fullName) {
+      user.fullName = fullName;
+    }
+    if (email) {
+      user.email = email;
+    }
+    if (phoneNumber) {
+      user.profile.phoneNumber = phoneNumber;
+    }
+    if (bio) {
+      user.profile.bio = bio;
+    }
+    if (skills) {
+      user.profile.skills = skillsArray;
+    }
+    if (resume) {
+      user.profile.resume = resume;
+    }
+    if (profilePicture) {
+      user.profile.profilePicture = profilePicture;
+    }
     await user.save();
     res.status(200).json({ message: "Profile updated successfully", user });
   } catch (error) {

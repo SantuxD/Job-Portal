@@ -3,47 +3,45 @@ import mongoose from "mongoose";
 const jobSchema = new mongoose.Schema(
   {
     title: {
-        type: String,
-        required: true,
+      type: String,
+      required: true,
     },
     description: {
-        type: String,
-        required: true,
+      type: String,
+      required: true,
     },
-    requirements:{
-        type: String,
-        required: true,
+    requirements: {
+      type: String,
+      required: true,
     },
     location: {
-        type: String,
-        required: true,
+      type: String,
+      required: true,
     },
     salary: {
-        type: Number,
-        required: true,
+      type: Number,
+      required: true,
     },
     jobType: {
-        type: String,
-        enum: ["Full-time", "Part-time", "Contract", "Internship"],
-        required: true,
+      type: String,
+      enum: ["Full-time", "Part-time", "Contract", "Internship"],
+      required: true,
     },
     company: {
-        type: mongoose.Schema.Types.ObjectId,
-        ref: "Company",
-        required: true,
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "Company",
+      required: true,
     },
     postedBy: {
-        type: mongoose.Schema.Types.ObjectId,
-        ref: "User",
-        required: true,
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "User",
+      required: true,
     },
-    applicants: 
-        {
-            type: mongoose.Schema.Types.ObjectId,   
-            ref: "Application",
-            default: null
-        }
-    
+    applicants: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "Application",
+      default: null,
+    },
   },
   { timestamps: true }
 );
@@ -51,4 +49,3 @@ const jobSchema = new mongoose.Schema(
 const Job = mongoose.model("Job", jobSchema);
 
 export default Job;
-
