@@ -107,10 +107,12 @@ const loginUser = async (req, res) => {
   }
 };
 
-const logoutUser = (req, res) => {
+const logoutUser = async (req, res) => {
+
+
   try {
     return res.status(200).cookie("token", "", { maxAge: 0 }).json({
-      message: "Logged out successfully",
+      message: `Logged out successfully`,
     });
   } catch (error) {
     console.error("Error in user logout:", error);
