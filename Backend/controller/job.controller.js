@@ -106,7 +106,7 @@ export const getJobById = async (req, res) => {
   }
 };
 
-export const getAdminJobs = async (req, res) => {
+export const getAdminCreatedJobs = async (req, res) => {
     try {
     const adminId = req.id;
     const jobs = await jobModel.find({ postedBy: adminId });
@@ -127,3 +127,4 @@ export const getAdminJobs = async (req, res) => {
     });
   }
 };
+
