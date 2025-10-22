@@ -6,39 +6,39 @@ export const createJob = async (req, res) => {
       title,
       description,
       requirements,
-      companyId,
+      company,
       location,
       salary,
       position,
-      postedBy,
       experience,
       jobType,
     } = req.body;
-    // if (
-    //   !title ||
-    //   !description ||
-    //   !requirements ||
-    //   !companyId ||
-    //   !location ||
-    //   !salary ||
-    //   !position ||
-    //   !experience ||
-    //   !jobType ||
-    //   !postedBy
-    // ) {
-    //   return res.status(400).json({ message: "All fields are required" });
-    // }
+    if (
+      !title ||
+      !description ||
+      !requirements ||
+      !company ||
+      !location ||
+      !salary ||
+      !position ||
+      !experience ||
+      !jobType 
+     
+    ) {
+      return res.status(400).json({ message: "All fields are required" });
+    }
 
     const newJob = await jobModel.create({
       title,
       description,
       requirements,
-      companyId,
+      company,
       location,
       salary,
       position,
       postedBy: req.id,
       experience,
+      jobType,
     });
     return res.status(201).json({
       message: "Job created successfully",
@@ -54,6 +54,7 @@ export const createJob = async (req, res) => {
 export const getAllJobs = async (req, res) => {
   try {
     const keyword = req.query.keyword || "";
+    const experienceNumber = Number(keyword);
     const query = {
       $or: [
         { title: { $regex: keyword, $options: "i" } },
@@ -61,7 +62,7 @@ export const getAllJobs = async (req, res) => {
         { requirements: { $regex: keyword, $options: "i" } },
         { location: { $regex: keyword, $options: "i" } },
         { jobType: { $regex: keyword, $options: "i" } },
-        { experience: { $regex: keyword, $options: "i" } },
+        ...(isNaN(experienceNumber) ? [] : [{ experience: experienceNumber }]),
         { position: { $regex: keyword, $options: "i" } },
       ],
     };

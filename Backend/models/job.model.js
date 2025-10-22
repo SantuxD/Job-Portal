@@ -36,6 +36,10 @@ const jobSchema = new mongoose.Schema(
       ref: "Company",
       required: true,
     },
+    position: {
+      type: String,
+      required: true,
+    },
     postedBy: {
       type: mongoose.Schema.Types.ObjectId,
       ref: "User",

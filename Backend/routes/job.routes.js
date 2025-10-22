@@ -8,7 +8,7 @@ const router = Router();
 router.post('/postjobs', authMiddleware,createJob);
 router.get('/getjobs', getAllJobs);
 router.get('/jobs/:jobId', getJobById);
-router.put('/admin/jobs', authMiddleware, getAdminCreatedJobs);
+router.get('/adminjobs', authMiddleware, getAdminCreatedJobs);
 
 
 export default router;
