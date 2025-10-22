@@ -1,4 +1,4 @@
-import express from 'express';
+
 import { Router } from 'express';
 import {createJob, getAllJobs, getJobById, getAdminCreatedJobs} from '../controller/job.controller.js';
 import authMiddleware from '../middleware/auth.middleware.js';

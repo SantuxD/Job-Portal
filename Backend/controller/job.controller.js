@@ -14,20 +14,20 @@ export const createJob = async (req, res) => {
       experience,
       jobType,
     } = req.body;
-    if (
-      !title ||
-      !description ||
-      !requirements ||
-      !companyId ||
-      !location ||
-      !salary ||
-      !position ||
-      !experience ||
-      !jobType ||
-      !postedBy
-    ) {
-      return res.status(400).json({ message: "All fields are required" });
-    }
+    // if (
+    //   !title ||
+    //   !description ||
+    //   !requirements ||
+    //   !companyId ||
+    //   !location ||
+    //   !salary ||
+    //   !position ||
+    //   !experience ||
+    //   !jobType ||
+    //   !postedBy
+    // ) {
+    //   return res.status(400).json({ message: "All fields are required" });
+    // }
 
     const newJob = await jobModel.create({
       title,
