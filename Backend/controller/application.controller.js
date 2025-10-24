@@ -45,30 +45,59 @@ const applyJob = async (req, res) => {
   }
 };
 
-const getAllApplications = async (req, res) => {
-    try {
-        const userId = req.id;
-        const applications = await applicationModel.find({ userId }).sort({ createdAt: -1 }).populate({path: "job",options:{ sort: { createdAt: -1 } }, populate: { path: "company", {sort: {createdAt: -1} } } });
+const getAllAppliedJobs = async (req, res) => {
+  try {
+    const userId = req.id;
+    const applications = await applicationModel
+      .find({ userId })
+      .sort({ createdAt: -1 })
+      .populate({
+        path: "job",
+        options: { sort: { createdAt: -1 } },
+        populate: { path: "company", options: { sort: { createdAt: -1 } } },
+      });
 
-        if (!applications || applications.length === 0) {
-            return res.status(404).json({
-                message: "No applications found",
-            });
-        }
-        return res.status(200).json({
-            message: "Applications fetched successfully",
-            applications,
-        });
-
-
-
-    }catch (error) {
+    if (!applications || applications.length === 0) {
+      return res.status(404).json({
+        message: "No applications found",
+      });
+    }
+    return res.status(200).json({
+      message: "Applications fetched successfully",
+      applications,
+    });
+  } catch (error) {
     console.error("Error in fetching applications:", error);
     res.status(500).json({
-        message: "Server error",
+      message: "Server error",
     });
-    }
+  }
 };
 
+const getAllApplicants = async (req, res) => {
+  try {
+    const jobId = req.params.id;
+    const job = await jobModel.findById(jobId).populate({
+      path: "applications",
+      options: { sort: { createdAt: -1 } },
+      populate: { path: "applicant", options: { sort: { createdAt: -1 } } },
+    });
 
-export { applyJob };
+    if (!job || job.length === 0) {
+      return res.status(404).json({
+        message: "No applications found",
+      });
+    }
+    return res.status(200).json({
+      message: "All applications fetched successfully",
+      job,
+    });
+  } catch (error) {
+    console.error("Error in fetching all applications:", error);
+    res.status(500).json({
+      message: "Server error",
+    });
+  }
+};
+
+export { applyJob, getAllAppliedJobs, getAllApplicants };
