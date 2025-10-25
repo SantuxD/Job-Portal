@@ -100,4 +100,27 @@ const getAllApplicants = async (req, res) => {
   }
 };
 
-export { applyJob, getAllAppliedJobs, getAllApplicants };
+const updateApplicationStatus = async (req, res) => {
+  try {
+    const { applicationId } = req.params;
+    const { status } = req.params;
+    const application = await applicationModel.findById(applicationId);
+    if (!application) {
+      return res.status(404).json({
+        message: "Application not found",
+      });
+    }
+    application.status = status;
+    await application.save();
+    res.status(200).json({
+      message: "Application status updated successfully",
+      application,
+    });
+  } catch (error) {
+    console.error("Error in updating application status:", error);
+    res.status(500).json({
+      message: "Server error",
+    });
+  }
+};
+export { applyJob, getAllAppliedJobs, getAllApplicants, updateApplicationStatus };
