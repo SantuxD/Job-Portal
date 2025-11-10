@@ -31,7 +31,7 @@ const applyJob = async (req, res) => {
       jobId,
       userId,
     });
-    job.applications.push(newApplication._id);
+    job.applicants.push(newApplication._id);
     await job.save();
     await newApplication.save();
     res.status(201).json({
