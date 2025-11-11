@@ -29,7 +29,7 @@ const applyJob = async (req, res) => {
 
     const newApplication = new applicationModel({
       jobId,
-      userId,
+      userId, 
     });
     job.applicants.push(newApplication._id);
     await job.save();
@@ -42,7 +42,7 @@ const applyJob = async (req, res) => {
     res.status(500).json({
       message: "Server error",
     });
-  }
+  }  
 };
 
 const getAllAppliedJobs = async (req, res) => {
